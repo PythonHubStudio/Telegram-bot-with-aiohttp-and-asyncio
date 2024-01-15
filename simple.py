@@ -1,7 +1,8 @@
 import asyncio
 import aiohttp #pip install aiohttp
-from config import TOKEN
 
+
+TOKEN = 'your TOKEN here'
 
 URL = f'https://api.telegram.org/bot{TOKEN}/'
 
@@ -14,14 +15,14 @@ async def send_message(chat_id, text):
 
 
 async def handle_updates(update):
-    message = update['message']
-    chat_id = message['chat']['id']
-    try:
-        text = message['text']
-        await send_message(chat_id, f'Эхо: {text}')
-    except:
-        #print(str(update))
-        pass
+    message = update.get('message', False)
+    if message:
+        chat_id = message['chat']['id']
+        text = message.get('text', False)
+        if text:
+            await send_message(chat_id, f'Эхо: {text}')
+        else:
+            await send_message(chat_id, 'Я работаю только с текстом')
 
 
 async def get_updates():
@@ -36,11 +37,9 @@ async def get_updates():
                     for update in updates['result']:
                         await handle_updates(update)
 
-
+                        
 async def main():
     await get_updates()
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
-
+asyncio.run(main())
