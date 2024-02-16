@@ -36,6 +36,8 @@ async def get_updates():
                     offset = updates['result'][-1]['update_id'] + 1
                     for update in updates['result']:
                         await handle_updates(update)
+                        #посмотреть содержимое обновления
+                        print(update)
 
                         
 async def main():
